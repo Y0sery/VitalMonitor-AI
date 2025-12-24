@@ -1,0 +1,176 @@
+{
+    "project": "Refresh Your Heart",
+    "pages": [
+        {
+            "name": "Cover",
+            "frames": [
+                {
+                    "name": "Thumbnail",
+                    "width": 1920,
+                    "height": 960,
+                    "content": "Project Logo, Version, Status"
+                }
+            ]
+        },
+        {
+            "name": "Design System",
+            "frames": [
+                {
+                    "name": "Colors",
+                    "content": "Primary (#0B67A6), Accent (#4ABDAC), Neutrals, Semantic Colors"
+                },
+                {
+                    "name": "Typography",
+                    "content": "Inter Type Scale (H1-H4, Body, Caption)"
+                },
+                {
+                    "name": "Icons",
+                    "content": "Feather Icons or Heroicons set"
+                },
+                {
+                    "name": "Components",
+                    "content": "Buttons, Inputs, Cards, Modals, Toasts"
+                }
+            ]
+        },
+        {
+            "name": "01_Home",
+            "frames": [
+                {
+                    "name": "Home_Desktop",
+                    "width": 1440,
+                    "content": "Hero Section, Stats Bar, About Preview, Tips Preview, Services Preview, Footer"
+                },
+                {
+                    "name": "Home_Mobile",
+                    "width": 375,
+                    "content": "Responsive layout of Home_Desktop"
+                }
+            ]
+        },
+        {
+            "name": "02_Services",
+            "frames": [
+                {
+                    "name": "Services_List",
+                    "width": 1440,
+                    "content": "Service Cards (Model 1, Model 2, Consultation)"
+                },
+                {
+                    "name": "Prediction_Modal",
+                    "width": 1440,
+                    "content": "Overlay modal with PredictForm"
+                },
+                {
+                    "name": "Result_Success",
+                    "width": 1440,
+                    "content": "Result card showing 'No Disease' or 'Early Severity'"
+                },
+                {
+                    "name": "Result_Warning",
+                    "width": 1440,
+                    "content": "Result card showing 'Disease Detected' or 'Critical Severity' with urgent CTAs"
+                }
+            ]
+        },
+        {
+            "name": "03_Tips",
+            "frames": [
+                {
+                    "name": "Tips_Grid",
+                    "width": 1440,
+                    "content": "Grid of Tip Cards with search/filter"
+                },
+                {
+                    "name": "Tip_Detail",
+                    "width": 1440,
+                    "content": "Full article view with hero image and related tips"
+                }
+            ]
+        },
+        {
+            "name": "04_Doctors",
+            "frames": [
+                {
+                    "name": "Doctors_List",
+                    "width": 1440,
+                    "content": "Grid of Doctor Cards with filters (Specialty, Availability)"
+                },
+                {
+                    "name": "Doctor_Profile_Modal",
+                    "width": 1440,
+                    "content": "Detailed view with bio, slots, and booking action"
+                },
+                {
+                    "name": "Booking_Flow",
+                    "width": 1440,
+                    "content": "Step-by-step booking form (Date/Time -> Patient Info -> Confirmation)"
+                }
+            ]
+        },
+        {
+            "name": "05_About",
+            "frames": [
+                {
+                    "name": "About_Page",
+                    "width": 1440,
+                    "content": "Mission, Team Grid, Testimonials, ML Model Explanations"
+                }
+            ]
+        }
+    ],
+    "components": [
+        {
+            "name": "Button",
+            "variants": [
+                "Primary",
+                "Secondary",
+                "Outline",
+                "Ghost"
+            ],
+            "states": [
+                "Default",
+                "Hover",
+                "Disabled",
+                "Loading"
+            ]
+        },
+        {
+            "name": "Input",
+            "variants": [
+                "Default",
+                "Error"
+            ],
+            "states": [
+                "Default",
+                "Focus",
+                "Filled"
+            ]
+        },
+        {
+            "name": "Card_Doctor",
+            "variants": [
+                "Grid_View",
+                "List_View"
+            ],
+            "states": [
+                "Available",
+                "Busy"
+            ]
+        },
+        {
+            "name": "Card_Tip",
+            "variants": [
+                "Vertical",
+                "Horizontal"
+            ]
+        },
+        {
+            "name": "Modal",
+            "variants": [
+                "Default",
+                "Full_Screen_Mobile"
+            ]
+        }
+    ]
+}

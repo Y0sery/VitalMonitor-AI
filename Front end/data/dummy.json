@@ -1,0 +1,171 @@
+{
+    "doctors": [
+        {
+            "id": "d1",
+            "name": "Dr. Sarah Johnson",
+            "specialty": "Cardiologist",
+            "age": 45,
+            "gender": "Female",
+            "nationality": "USA",
+            "country": "United States",
+            "image": "https://i.pravatar.cc/300?img=1",
+            "availability": "Available",
+            "rating": 4.9,
+            "experience": "15 years"
+        },
+        {
+            "id": "d2",
+            "name": "Dr. Ahmed Hassan",
+            "specialty": "Heart Surgeon",
+            "age": 52,
+            "gender": "Male",
+            "nationality": "Egypt",
+            "country": "Egypt",
+            "image": "https://i.pravatar.cc/300?img=11",
+            "availability": "Busy",
+            "rating": 4.8,
+            "experience": "20 years"
+        },
+        {
+            "id": "d3",
+            "name": "Dr. Emily Chen",
+            "specialty": "Pediatric Cardiologist",
+            "age": 38,
+            "gender": "Female",
+            "nationality": "Canada",
+            "country": "Canada",
+            "image": "https://i.pravatar.cc/300?img=5",
+            "availability": "Available",
+            "rating": 4.7,
+            "experience": "10 years"
+        },
+        {
+            "id": "d4",
+            "name": "Dr. Miguel Rodriguez",
+            "specialty": "Interventional Cardiologist",
+            "age": 48,
+            "gender": "Male",
+            "nationality": "Spain",
+            "country": "Spain",
+            "image": "https://i.pravatar.cc/300?img=33",
+            "availability": "Available",
+            "rating": 4.9,
+            "experience": "18 years"
+        },
+        {
+            "id": "d5",
+            "name": "Dr. Yuki Tanaka",
+            "specialty": "Electrophysiologist",
+            "age": 41,
+            "gender": "Male",
+            "nationality": "Japan",
+            "country": "Japan",
+            "image": "https://i.pravatar.cc/300?img=53",
+            "availability": "On Leave",
+            "rating": 4.6,
+            "experience": "12 years"
+        },
+        {
+            "id": "d6",
+            "name": "Dr. Olivia Wilson",
+            "specialty": "Cardiologist",
+            "age": 35,
+            "gender": "Female",
+            "nationality": "UK",
+            "country": "United Kingdom",
+            "image": "https://i.pravatar.cc/300?img=9",
+            "availability": "Available",
+            "rating": 4.8,
+            "experience": "8 years"
+        },
+        {
+            "id": "d7",
+            "name": "Dr. Klaus Muller",
+            "specialty": "Cardiac Surgeon",
+            "age": 55,
+            "gender": "Male",
+            "nationality": "Germany",
+            "country": "Germany",
+            "image": "https://i.pravatar.cc/300?img=12",
+            "availability": "Busy",
+            "rating": 5.0,
+            "experience": "25 years"
+        },
+        {
+            "id": "d8",
+            "name": "Dr. Fatima Al-Sayed",
+            "specialty": "Preventive Cardiologist",
+            "age": 42,
+            "gender": "Female",
+            "nationality": "UAE",
+            "country": "UAE",
+            "image": "https://i.pravatar.cc/300?img=24",
+            "availability": "Available",
+            "rating": 4.7,
+            "experience": "14 years"
+        },
+        {
+            "id": "d9",
+            "name": "Dr. Lucas Silva",
+            "specialty": "Cardiologist",
+            "age": 39,
+            "gender": "Male",
+            "nationality": "Brazil",
+            "country": "Brazil",
+            "image": "https://i.pravatar.cc/300?img=68",
+            "availability": "Available",
+            "rating": 4.5,
+            "experience": "9 years"
+        },
+        {
+            "id": "d10",
+            "name": "Dr. Priya Patel",
+            "specialty": "Heart Failure Specialist",
+            "age": 46,
+            "gender": "Female",
+            "nationality": "India",
+            "country": "India",
+            "image": "https://i.pravatar.cc/300?img=20",
+            "availability": "Available",
+            "rating": 4.9,
+            "experience": "16 years"
+        }
+    ],
+    "tips": [
+        {
+            "id": "t1",
+            "title": "Stay Active Daily",
+            "summary": "Aim for at least 30 minutes of moderate physical activity every day.",
+            "content": "Regular physical activity is one of the best things you can do for your heart. It helps control your weight and reduce your chances of developing other conditions that may put a strain on your heart, such as high blood pressure, high cholesterol and type 2 diabetes.",
+            "image": "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
+        },
+        {
+            "id": "t2",
+            "title": "Eat a Heart-Healthy Diet",
+            "summary": "Focus on fruits, vegetables, whole grains, and lean proteins.",
+            "content": "A healthy diet can help protect your heart, improve your blood pressure and cholesterol, and reduce your risk of type 2 diabetes. A heart-healthy eating plan includes: Vegetables and fruits, Beans or other legumes, Lean meats and fish, Low-fat or fat-free dairy foods, Whole grains, Healthy fats.",
+            "image": "https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
+        },
+        {
+            "id": "t3",
+            "title": "Manage Stress",
+            "summary": "Find healthy ways to cope with stress, such as meditation or hobbies.",
+            "content": "Stress can increase your risk of heart disease. It can raise your blood pressure, and extreme stress can be a 'trigger' for a heart attack. Also, some common ways of coping with stress, such as overeating, drinking too much alcohol and smoking, are bad for your heart.",
+            "image": "https://images.unsplash.com/photo-1506126613408-eca07ce68773?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
+        },
+        {
+            "id": "t4",
+            "title": "Get Enough Quality Sleep",
+            "summary": "Aim for 7-9 hours of sleep per night to support heart health.",
+            "content": "Sleep is essential for a healthy heart. People who don't sleep enough are at higher risk for cardiovascular disease and coronary heart disease—regardless of age, weight, smoking and exercise habits.",
+            "image": "https://images.unsplash.com/photo-1541781777621-05f74246db52?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
+        },
+        {
+            "id": "t5",
+            "title": "Know Your Numbers",
+            "summary": "Regularly check your blood pressure, cholesterol, and blood sugar levels.",
+            "content": "High blood pressure and high cholesterol are silent killers because they don't show symptoms. Knowing your numbers is the first step to keeping your heart healthy. Schedule regular check-ups with your doctor.",
+            "image": "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3"
+        }
+    ]
+}

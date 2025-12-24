@@ -1,0 +1,41 @@
+/**
+ * index.css
+ * 
+ * Role: Global Stylesheet
+ * Responsibilities:
+ * - Imports Google Fonts (Outfit).
+ * - Initializes Tailwind CSS layers (base, components, utilities).
+ * - Defines global base styles (font-family, background color).
+ * - Defines custom utility classes (.glass, .text-gradient).
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    font-family: 'Outfit', sans-serif;
+    @apply bg-gray-50 text-gray-900 antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply tracking-tight;
+  }
+}
+
+/* Custom Utility Classes */
+.glass {
+  @apply bg-white/70 backdrop-blur-lg border border-white/20 shadow-xl;
+}
+
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600;
+}
