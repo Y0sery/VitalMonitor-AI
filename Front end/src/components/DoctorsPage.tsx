@@ -1,7 +1,6 @@
 /**
  * DoctorsPage.tsx
- * 
- * Role: Doctor Search and Booking Page
+ * * Role: Doctor Search and Booking Page
  * Responsibilities:
  * - Displays a list of available doctors.
  * - Provides search and filtering capabilities (by name, specialty, etc.).
@@ -41,6 +40,19 @@ const doctors = [
         description: 'Expert in minimally invasive cardiac surgery and complex valve repairs. Pioneered several new surgical techniques.'
     },
     {
+            "id": "d2",
+            "name": "Dr. Ahmed Hassan",
+            "specialty": "Heart Surgeon",
+            "age": 52,
+            "gender": "Male",
+            "nationality": "Egypt",
+            "country": "Egypt",
+            "image": "https://i.pravatar.cc/300?img=11",
+            "availability": "Busy",
+            "rating": 4.8,
+            "experience": "20 years"
+        },
+    {
         id: '3',
         name: 'Dr. Emily Davis',
         specialty: 'Pediatric Cardiologist',
@@ -73,41 +85,66 @@ const doctors = [
 ];
 
 export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
-    // State for search and filtering
+    // 1. تعريف الـ States الخاصة بالبحث والفلاتر
     const [searchTerm, setSearchTerm] = useState('');
-    // State for the currently selected doctor for booking
+    const [availabilityFilter, setAvailabilityFilter] = useState('Availability');
+    const [locationFilter, setLocationFilter] = useState('Location');
+    const [languageFilter, setLanguageFilter] = useState('Language');
+
+    // States booking logic
     const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
-    // State to control booking modal visibility
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
-    // State to track booking type (consultation vs appointment)
     const [bookingType, setBookingType] = useState<'consultation' | 'appointment'>('appointment');
 
-    // Open modal for appointment booking
     const handleBookAppointment = (doctor: any) => {
         setSelectedDoctor(doctor);
         setBookingType('appointment');
         setIsBookingModalOpen(true);
     };
 
-    // Open modal for consultation booking
     const handleBookConsultation = (doctor: any) => {
         setSelectedDoctor(doctor);
         setBookingType('consultation');
         setIsBookingModalOpen(true);
     };
 
-    // Handle booking confirmation from the modal
     const handleConfirmBooking = (date: string, time: string) => {
         console.log(`Booked ${bookingType} with ${selectedDoctor.name} on ${date} at ${time}`);
-        // Here you would typically make an API call
         alert(`${bookingType === 'consultation' ? 'Consultation' : 'Appointment'} booked successfully!`);
     };
 
-    // Filter doctors based on search term (name or specialty)
-    const filteredDoctors = doctors.filter(doctor =>
-        doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // 2. منطق الفلترة المحدث (بيجمع كل الشروط مع بعض)
+    const filteredDoctors = doctors.filter(doctor => {
+        // شرط البحث بالاسم أو التخصص
+        const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
+
+        // شرط التوافر (ربطنا 'Available Today' بكلمة 'Available' في الداتا)
+        const matchesAvailability = availabilityFilter === 'Availability' 
+            ? true 
+            : (availabilityFilter === 'Available Today' ? doctor.availability === 'Available' : true);
+
+        // شرط الموقع
+        const matchesLocation = locationFilter === 'Location' || doctor.country === locationFilter;
+
+        // شرط اللغة (استنتجنا اللغة من الدولة عشان البيانات مفيهاش لغة حالياً)
+        // USA, UK, Australia, Canada -> English
+        // Spain -> Spanish
+        // Canada -> French (Example logic)
+        let matchesLanguage = true;
+        if (languageFilter !== 'Language') {
+            if (languageFilter === 'English') {
+                matchesLanguage = ['USA', 'UK', 'Australia', 'Canada'].includes(doctor.country);
+            } else if (languageFilter === 'Spanish') {
+                matchesLanguage = doctor.country === 'Spain';
+            } else if (languageFilter === 'French') {
+                matchesLanguage = doctor.country === 'Canada' || doctor.country === 'France';
+            }
+        }
+
+        // إرجاع النتيجة لو كل الشروط متحققة
+        return matchesSearch && matchesAvailability && matchesLocation && matchesLanguage;
+    });
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] pt-20 pb-12">
@@ -128,9 +165,6 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
                             <h1 className="text-3xl font-extrabold text-[#0F172A]">Our Expert Doctors</h1>
                             <p className="text-gray-500 mt-2">Find and book appointments with our world-class cardiologists.</p>
                         </div>
-                        <div className="flex gap-3">
-                            {/* Buttons removed as requested */}
-                        </div>
                     </div>
 
                     {/* Search and Filters Bar */}
@@ -147,24 +181,44 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        {/* Filter Dropdowns (Visual only for now) */}
+                        
+                        {/* 3. ربط القوائم بالـ State */}
                         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
-                            <select className="px-4 py-3 rounded-xl border-none bg-white shadow-sm text-gray-600 font-medium focus:ring-2 focus:ring-[#0EA5E9]/20 cursor-pointer min-w-[140px]">
-                                <option>Availability</option>
-                                <option>Available Today</option>
-                                <option>Next 3 Days</option>
+                            {/* Availability Filter */}
+                            <select 
+                                value={availabilityFilter}
+                                onChange={(e) => setAvailabilityFilter(e.target.value)}
+                                className="px-4 py-3 rounded-xl border-none bg-white shadow-sm text-gray-600 font-medium focus:ring-2 focus:ring-[#0EA5E9]/20 cursor-pointer min-w-[140px]"
+                            >
+                                <option value="Availability">Availability</option>
+                                <option value="Available Today">Available Today</option>
+                                {/* Removed 'Next 3 Days' as we don't have date logic in mock data yet, kept it simple */}
                             </select>
-                            <select className="px-4 py-3 rounded-xl border-none bg-white shadow-sm text-gray-600 font-medium focus:ring-2 focus:ring-[#0EA5E9]/20 cursor-pointer min-w-[140px]">
-                                <option>Location</option>
-                                <option>USA</option>
-                                <option>UK</option>
-                                <option>Canada</option>
+
+                            {/* Location Filter */}
+                            <select 
+                                value={locationFilter}
+                                onChange={(e) => setLocationFilter(e.target.value)}
+                                className="px-4 py-3 rounded-xl border-none bg-white shadow-sm text-gray-600 font-medium focus:ring-2 focus:ring-[#0EA5E9]/20 cursor-pointer min-w-[140px]"
+                            >
+                                <option value="Location">Location</option>
+                                <option value="USA">USA</option>
+                                <option value="UK">UK</option>
+                                <option value="Canada">Canada</option>
+                                <option value="Australia">Australia</option>
+                                <option value="Spain">Spain</option>
                             </select>
-                            <select className="px-4 py-3 rounded-xl border-none bg-white shadow-sm text-gray-600 font-medium focus:ring-2 focus:ring-[#0EA5E9]/20 cursor-pointer min-w-[140px]">
-                                <option>Language</option>
-                                <option>English</option>
-                                <option>Spanish</option>
-                                <option>French</option>
+
+                            {/* Language Filter */}
+                            <select 
+                                value={languageFilter}
+                                onChange={(e) => setLanguageFilter(e.target.value)}
+                                className="px-4 py-3 rounded-xl border-none bg-white shadow-sm text-gray-600 font-medium focus:ring-2 focus:ring-[#0EA5E9]/20 cursor-pointer min-w-[140px]"
+                            >
+                                <option value="Language">Language</option>
+                                <option value="English">English</option>
+                                <option value="Spanish">Spanish</option>
+                                <option value="French">French</option>
                             </select>
                         </div>
                     </div>
@@ -174,6 +228,7 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
             {/* Doctor List Grid */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 gap-6 max-w-5xl mx-auto">
+                    {/* استخدمنا filteredDoctors بدل doctors */}
                     {filteredDoctors.map((doctor) => (
                         <DoctorCardWide
                             key={doctor.id}
