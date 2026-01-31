@@ -15,6 +15,7 @@ import { BookingModal } from './BookingModal';
 
 interface DoctorsPageProps {
     onNavigateHome: () => void;
+    onBookingConfirm: (doctor: any, date: string, time: string, type: 'appointment' | 'consultation') => void;
 }
 
 // Mock Data (Expanded for the page)
@@ -40,18 +41,18 @@ const doctors = [
         description: 'Expert in minimally invasive cardiac surgery and complex valve repairs. Pioneered several new surgical techniques.'
     },
     {
-            "id": "d2",
-            "name": "Dr. Ahmed Hassan",
-            "specialty": "Heart Surgeon",
-            "age": 52,
-            "gender": "Male",
-            "nationality": "Egypt",
-            "country": "Egypt",
-            "image": "https://i.pravatar.cc/300?img=11",
-            "availability": "Busy",
-            "rating": 4.8,
-            "experience": "20 years"
-        },
+        "id": "d2",
+        "name": "Dr. Ahmed Hassan",
+        "specialty": "Heart Surgeon",
+        "age": 52,
+        "gender": "Male",
+        "nationality": "Egypt",
+        "country": "Egypt",
+        "image": "https://i.pravatar.cc/300?img=11",
+        "availability": "Busy",
+        "rating": 4.8,
+        "experience": "20 years"
+    },
     {
         id: '3',
         name: 'Dr. Emily Davis',
@@ -84,14 +85,14 @@ const doctors = [
     }
 ];
 
-export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
-    // 1. تعريف الـ States الخاصة بالبحث والفلاتر
+export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome, onBookingConfirm }) => {
+    // Search and filter states
     const [searchTerm, setSearchTerm] = useState('');
     const [availabilityFilter, setAvailabilityFilter] = useState('Availability');
     const [locationFilter, setLocationFilter] = useState('Location');
     const [languageFilter, setLanguageFilter] = useState('Language');
 
-    // States booking logic
+    // Booking states
     const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
     const [bookingType, setBookingType] = useState<'consultation' | 'appointment'>('appointment');
@@ -109,28 +110,26 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
     };
 
     const handleConfirmBooking = (date: string, time: string) => {
-        console.log(`Booked ${bookingType} with ${selectedDoctor.name} on ${date} at ${time}`);
-        alert(`${bookingType === 'consultation' ? 'Consultation' : 'Appointment'} booked successfully!`);
+        // Pass booking details to parent (App.tsx) to navigate to payment page
+        onBookingConfirm(selectedDoctor, date, time, bookingType);
+        setIsBookingModalOpen(false);
     };
 
-    // 2. منطق الفلترة المحدث (بيجمع كل الشروط مع بعض)
+    // Filter logic
     const filteredDoctors = doctors.filter(doctor => {
-        // شرط البحث بالاسم أو التخصص
+        // Search by name or specialty
         const matchesSearch = doctor.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
             doctor.specialty.toLowerCase().includes(searchTerm.toLowerCase());
 
-        // شرط التوافر (ربطنا 'Available Today' بكلمة 'Available' في الداتا)
+        // Availability filter
         const matchesAvailability = availabilityFilter === 'Availability' 
             ? true 
             : (availabilityFilter === 'Available Today' ? doctor.availability === 'Available' : true);
 
-        // شرط الموقع
+        // Location filter
         const matchesLocation = locationFilter === 'Location' || doctor.country === locationFilter;
 
-        // شرط اللغة (استنتجنا اللغة من الدولة عشان البيانات مفيهاش لغة حالياً)
-        // USA, UK, Australia, Canada -> English
-        // Spain -> Spanish
-        // Canada -> French (Example logic)
+        // Language filter (inferred from country)
         let matchesLanguage = true;
         if (languageFilter !== 'Language') {
             if (languageFilter === 'English') {
@@ -142,7 +141,6 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
             }
         }
 
-        // إرجاع النتيجة لو كل الشروط متحققة
         return matchesSearch && matchesAvailability && matchesLocation && matchesLanguage;
     });
 
@@ -182,7 +180,6 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
                             />
                         </div>
                         
-                        {/* 3. ربط القوائم بالـ State */}
                         <div className="flex gap-2 overflow-x-auto pb-2 md:pb-0">
                             {/* Availability Filter */}
                             <select 
@@ -192,7 +189,6 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
                             >
                                 <option value="Availability">Availability</option>
                                 <option value="Available Today">Available Today</option>
-                                {/* Removed 'Next 3 Days' as we don't have date logic in mock data yet, kept it simple */}
                             </select>
 
                             {/* Location Filter */}
@@ -207,6 +203,7 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
                                 <option value="Canada">Canada</option>
                                 <option value="Australia">Australia</option>
                                 <option value="Spain">Spain</option>
+                                <option value="Egypt">Egypt</option>
                             </select>
 
                             {/* Language Filter */}
@@ -228,7 +225,6 @@ export const DoctorsPage: React.FC<DoctorsPageProps> = ({ onNavigateHome }) => {
             {/* Doctor List Grid */}
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 gap-6 max-w-5xl mx-auto">
-                    {/* استخدمنا filteredDoctors بدل doctors */}
                     {filteredDoctors.map((doctor) => (
                         <DoctorCardWide
                             key={doctor.id}

@@ -8,7 +8,8 @@
  * - Handles "routing" by conditionally rendering page components based on state.
  * - Manages global UI elements like Modals and Toasts.
  */
-
+import { PaymentPage } from './components/PaymentPage';
+import { PaymentSuccessPage } from './components/Paymentsuccesspage ';
 import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
@@ -102,9 +103,12 @@ const tips = [
 
 function App() {
     // --- State Management ---
+    
+    // Booking details state - stores complete booking information
+    const [currentBooking, setCurrentBooking] = useState<any>(null);
 
     // Controls which "page" or section is currently visible
-    const [currentPage, setCurrentPage] = useState<'home' | 'services' | 'doctors' | 'articles' | 'about' | 'auth' | 'profile'>('home');
+    const [currentPage, setCurrentPage] = useState<'home' | 'services' | 'doctors' | 'articles' | 'about' | 'auth' | 'profile' | 'payment' | 'payment-success'>('home');
 
     // Controls the mode of the AuthPage (login vs signup)
     const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
@@ -181,40 +185,33 @@ function App() {
             setCurrentPage('articles');
             window.scrollTo({ top: 0, behavior: 'smooth' });
         } else {
-            // Default to home, optionally scrolling to a specific section ID
+            // Navigate to Home by default
             setCurrentPage('home');
-            setTimeout(() => {
-                if (sectionId) {
-                    const element = document.getElementById(sectionId);
-                    if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' });
-                    }
-                } else {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            }, 100);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
     };
 
-    // Opens the modal to read a full health tip
+    // Handles clicking "Read More" on a tip card
+    // Opens modal with tip details
     const handleReadMore = (tip: any) => {
         setSelectedTip(tip);
         setActiveModal('tip');
     };
 
-    // Navigates to the full articles page
+    // Handles "View All Tips" button click
+    // Navigates to dedicated Articles page
     const handleViewAllTips = () => {
         setCurrentPage('articles');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // Displays a temporary toast message
+    // Shows a toast notification for user feedback
     const showToast = (message: string) => {
         setToastMessage(message);
-        setTimeout(() => setToastMessage(null), 3000);
+        setTimeout(() => setToastMessage(null), 3000); // Auto-hide after 3 seconds
     };
 
-    // Closes any active modal and clears selected data
+    // Closes any active modal
     const closeModal = () => {
         setActiveModal(null);
         setSelectedDoctor(null);
@@ -232,6 +229,44 @@ function App() {
     // Handles logout: clears auth state and redirects to home
     const handleLogout = () => {
         setIsLoggedIn(false);
+        setCurrentPage('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // NEW: Handles booking confirmation from BookingModal
+    // Saves booking details and navigates to payment page
+    const handleBookingConfirm = (doctor: any, date: string, time: string, type: 'appointment' | 'consultation') => {
+        const bookingDetails = {
+            doctor,
+            date,
+            time,
+            type,
+            bookingId: `BK${Date.now()}`, // Generate unique booking ID
+            timestamp: new Date().toISOString()
+        };
+        
+        setCurrentBooking(bookingDetails);
+        setCurrentPage('payment');
+        closeModal();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // NEW: Handles successful payment
+    // Navigates to success page
+    const handlePaymentSuccess = () => {
+        setCurrentPage('payment-success');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // NEW: Handles back navigation from payment page
+    const handlePaymentBack = () => {
+        setCurrentPage('doctors');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // NEW: Handles navigation from success page back to home
+    const handleSuccessToHome = () => {
+        setCurrentBooking(null); // Clear booking details
         setCurrentPage('home');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
@@ -312,9 +347,25 @@ function App() {
                     userRole === 'doctor'
                         ? <DoctorProfilePage onNavigate={handleNavigate} onLogout={handleLogout} />
                         : <PatientProfilePage onNavigate={handleNavigate} onLogout={handleLogout} />
+                ) : currentPage === 'payment' ? (
+                    // Payment page
+                    <PaymentPage
+                        bookingDetails={currentBooking}
+                        onPaymentSuccess={handlePaymentSuccess}
+                        onBack={handlePaymentBack}
+                    />
+                ) : currentPage === 'payment-success' ? (
+                    // Payment success page
+                    <PaymentSuccessPage
+                        bookingDetails={currentBooking}
+                        onBackToHome={handleSuccessToHome}
+                    />
                 ) : (
                     // Default fallback to Doctors Page if no other match (e.g. 'doctors' state)
-                    <DoctorsPage onNavigateHome={() => handleNavigate()} />
+                    <DoctorsPage 
+                        onNavigateHome={() => handleNavigate()} 
+                        onBookingConfirm={handleBookingConfirm}
+                    />
                 )}
             </main>
 
@@ -385,7 +436,7 @@ function App() {
             )}
 
             {/* Footer - hidden on certain pages */}
-            {currentPage !== 'doctors' && currentPage !== 'about' && currentPage !== 'auth' && currentPage !== 'profile' && <Footer />}
+            {currentPage !== 'doctors' && currentPage !== 'about' && currentPage !== 'auth' && currentPage !== 'profile' && currentPage !== 'payment' && currentPage !== 'payment-success' && <Footer />}
         </div>
     );
 }
