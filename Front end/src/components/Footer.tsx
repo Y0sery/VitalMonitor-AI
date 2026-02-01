@@ -1,19 +1,18 @@
 /**
  * Footer.tsx
- * 
- * Role: Page Footer
- * Responsibilities:
- * - Displays static links, contact information, and copyright.
- * - Provides social media links.
- * - Acts as the bottom anchor of the application layout.
  */
 
 import React from 'react';
 
-export const Footer: React.FC = () => {
+// ✅ أضف Props
+interface FooterProps {
+    onNavigate?: (page: string) => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     return (
         <footer className="bg-gray-900 text-white pt-20 pb-10 relative overflow-hidden">
-            {/* Background Gradients for visual appeal */}
+            {/* Background Gradients */}
             <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-20">
                 <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[50%] bg-blue-600 rounded-full blur-[120px]" />
                 <div className="absolute bottom-[-20%] left-[-10%] w-[50%] h-[50%] bg-purple-600 rounded-full blur-[120px]" />
@@ -21,7 +20,7 @@ export const Footer: React.FC = () => {
 
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
-                    {/* Brand Section: Logo and Description */}
+                    {/* Brand Section */}
                     <div className="col-span-1 lg:col-span-1">
                         <div className="flex items-center mb-6 gap-3">
                             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
@@ -32,9 +31,9 @@ export const Footer: React.FC = () => {
                             <span className="text-2xl font-bold tracking-tight">Refresh Your Heart</span>
                         </div>
                         <p className="text-gray-400 text-base leading-relaxed mb-6">
-                            Advanced AI-driven heart disease detection and expert consultation platform. Your heart health is our priority.
+                            Advanced AI-driven heart disease detection and expert consultation platform.
                         </p>
-                        {/* Social Media Links */}
+                        {/* Social Media */}
                         <div className="flex space-x-4">
                             {['Facebook', 'Twitter', 'Instagram', 'LinkedIn'].map((social) => (
                                 <a key={social} href="#" className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-gray-400 hover:bg-blue-600 hover:text-white transition-all duration-300">
@@ -45,7 +44,7 @@ export const Footer: React.FC = () => {
                         </div>
                     </div>
 
-                    {/* Quick Links Column */}
+                    {/* Quick Links */}
                     <div>
                         <h3 className="text-lg font-bold mb-6 text-white">Quick Links</h3>
                         <ul className="space-y-4">
@@ -60,7 +59,7 @@ export const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* Services Column */}
+                    {/* Services */}
                     <div>
                         <h3 className="text-lg font-bold mb-6 text-white">Our Services</h3>
                         <ul className="space-y-4">
@@ -75,7 +74,7 @@ export const Footer: React.FC = () => {
                         </ul>
                     </div>
 
-                    {/* Contact Information Column */}
+                    {/* Contact */}
                     <div>
                         <h3 className="text-lg font-bold mb-6 text-white">Contact Us</h3>
                         <ul className="space-y-4 text-gray-400">
@@ -102,14 +101,31 @@ export const Footer: React.FC = () => {
                     </div>
                 </div>
 
-                {/* Copyright Section */}
-                <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Refresh Your Heart. All rights reserved.</p>
-                    <div className="flex space-x-6 text-sm text-gray-500">
-                        <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-                        <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-                        <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+                {/* Copyright */}
+                <div className="border-t border-gray-800 pt-8">
+                    <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+                        <p className="text-gray-500 text-sm">&copy; {new Date().getFullYear()} Refresh Your Heart. All rights reserved.</p>
+                        <div className="flex space-x-6 text-sm text-gray-500">
+                            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+                            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+                            <a href="#" className="hover:text-white transition-colors">Cookie Policy</a>
+                        </div>
                     </div>
+                    
+                    {/* ✅ Admin Access Button - يظهر فقط لو onNavigate موجود */}
+                    {onNavigate && (
+                        <div className="pt-6 border-t border-gray-800 text-center">
+                            <button
+                                onClick={() => onNavigate('admin-login')}
+                                className="inline-flex items-center gap-2 text-xs text-gray-400 hover:text-gray-200 transition-colors group"
+                            >
+                                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                </svg>
+                                <span className="group-hover:underline">Admin Access</span>
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </footer>

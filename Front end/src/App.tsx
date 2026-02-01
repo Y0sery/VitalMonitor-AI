@@ -8,9 +8,11 @@
  * - Handles "routing" by conditionally rendering page components based on state.
  * - Manages global UI elements like Modals and Toasts.
  */
+import React, { useState } from 'react';
 import { PaymentPage } from './components/PaymentPage';
 import { PaymentSuccessPage } from './components/Paymentsuccesspage ';
-import React, { useState } from 'react';
+import { AdminDashboard } from './components/Admindashboard';
+import { AdminLogin } from './components/AdminLogin';
 import { Header } from './components/Header';
 import { Hero } from './components/Hero';
 import { ServicesList } from './components/ServicesList';
@@ -31,7 +33,11 @@ import { DoctorProfilePage } from './components/DoctorProfilePage';
 
 // --- Mock Data Section ---
 // In a real application, this data would be fetched from an API.
-const doctors = [
+// ✅ Doctors State - قابل للتعديل
+
+function App() {
+    // --- State Management ---
+    const [doctors, setDoctors] = useState([
     {
         id: '1',
         name: 'Dr. Sarah Smith',
@@ -40,7 +46,10 @@ const doctors = [
         rating: 4.9,
         availability: 'Available',
         country: 'USA',
-        description: 'Specializes in preventative cardiology and advanced heart failure management with over 15 years of experience.'
+        description: 'Specializes in preventative cardiology and advanced heart failure management with over 15 years of experience.',
+        hourlyRate: 150,
+        workingHours: { start: '09:00', end: '18:00' },
+        workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
     },
     {
         id: '2',
@@ -50,7 +59,10 @@ const doctors = [
         rating: 4.8,
         availability: 'Busy',
         country: 'Canada',
-        description: 'Expert in minimally invasive cardiac surgery and complex valve repairs. Pioneered several new surgical techniques.'
+        description: 'Expert in minimally invasive cardiac surgery and complex valve repairs.',
+        hourlyRate: 200,
+        workingHours: { start: '10:00', end: '19:00' },
+        workingDays: ['Mon', 'Wed', 'Fri', 'Sat']
     },
     {
         id: '3',
@@ -60,7 +72,10 @@ const doctors = [
         rating: 4.9,
         availability: 'Available',
         country: 'UK',
-        description: 'Dedicated to treating congenital heart defects in children. Known for her compassionate approach with families.'
+        description: 'Dedicated to treating congenital heart defects in children.',
+        hourlyRate: 180,
+        workingHours: { start: '08:00', end: '17:00' },
+        workingDays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri']
     },
     {
         id: '4',
@@ -70,9 +85,12 @@ const doctors = [
         rating: 4.7,
         availability: 'Available',
         country: 'Australia',
-        description: 'Focuses on catheter-based treatments for structural heart diseases. Active researcher in new stent technologies.'
+        description: 'Focuses on catheter-based treatments for structural heart diseases.',
+        hourlyRate: 170,
+        workingHours: { start: '09:00', end: '18:00' },
+        workingDays: ['Tue', 'Wed', 'Thu', 'Fri', 'Sat']
     }
-];
+]);
 
 const tips = [
     {
@@ -101,18 +119,27 @@ const tips = [
     }
 ];
 
-function App() {
-    // --- State Management ---
-    
     // Booking details state - stores complete booking information
     const [currentBooking, setCurrentBooking] = useState<any>(null);
 
     // Controls which "page" or section is currently visible
-    const [currentPage, setCurrentPage] = useState<'home' | 'services' | 'doctors' | 'articles' | 'about' | 'auth' | 'profile' | 'payment' | 'payment-success'>('home');
+const [currentPage, setCurrentPage] = useState<
+    'home' | 
+    'services' | 
+    'doctors' | 
+    'articles' | 
+    'about' | 
+    'auth' | 
+    'profile' |           // ✅ تأكد إن ده موجود
+    'payment' | 
+    'payment-success' | 
+    'admin-login' |       // ✅ للأدمن
+    'admin'               // ✅ للداش بورد
+>('home');   
 
-    // Controls the mode of the AuthPage (login vs signup)
-    const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
+const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
 
+const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false);
     // Modal visibility states
     const [isBookingModalOpen, setIsBookingModalOpen] = useState(false); // Unused in current flow but kept for future
     const [activeModal, setActiveModal] = useState<'booking' | 'tip' | null>(null);
@@ -129,8 +156,7 @@ function App() {
 
     // Authentication state
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [userRole, setUserRole] = useState<'patient' | 'doctor'>('patient');
-
+const [userRole, setUserRole] = useState<'patient' | 'doctor' | 'admin'>('patient');
     // --- Event Handlers ---
 
     // Opens the booking modal for a specific doctor
@@ -157,12 +183,20 @@ function App() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const handleAdminLoginSuccess = () => {
+    setIsAdminLoggedIn(true);
+    setCurrentPage('admin');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
     // Central navigation handler
     // Updates currentPage state and handles scrolling
     const handleNavigate = (sectionId?: string) => {
-        if (sectionId === 'about') {
-            setCurrentPage('about');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+    if (sectionId === 'about') {
+        setCurrentPage('about');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else if (sectionId === 'admin-login') { // ✅ ضيف ده
+        setCurrentPage('admin-login');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         } else if (sectionId === 'login' || sectionId === 'signup') {
             // If already logged in, go to profile, otherwise go to auth page
             if (isLoggedIn) {
@@ -219,19 +253,26 @@ function App() {
     };
 
     // Handles successful login: updates auth state and redirects to profile
-    const handleLoginSuccess = (role: 'patient' | 'doctor') => {
-        setIsLoggedIn(true);
-        setUserRole(role);
+const handleLoginSuccess = (role: 'patient' | 'doctor' | 'admin') => {
+    setIsLoggedIn(true);
+    setUserRole(role);
+    
+    // لو أدمن، روح على الداش بورد مباشرة
+    if (role === 'admin') {
+        setCurrentPage('admin');
+    } else {
         setCurrentPage('profile');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
+    }
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
     // Handles logout: clears auth state and redirects to home
     const handleLogout = () => {
-        setIsLoggedIn(false);
-        setCurrentPage('home');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    setIsLoggedIn(false);
+    setIsAdminLoggedIn(false); // ✅ أضف ده
+    setCurrentPage('home');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
 
     // NEW: Handles booking confirmation from BookingModal
     // Saves booking details and navigates to payment page
@@ -274,10 +315,16 @@ function App() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] font-sans text-[#0F172A]">
             {/* Global Header - visible on all pages */}
-            <Header onNavigate={handleNavigate} currentPage={currentPage} isLoggedIn={isLoggedIn} />
-
-            <main>
-                {/* Conditional Rendering based on currentPage state */}
+{/* ✅ Header - يختفي في admin-login و admin */}
+{currentPage !== 'admin-login' && currentPage !== 'admin' && (
+    <Header 
+        onNavigate={handleNavigate} 
+        currentPage={currentPage} 
+        isLoggedIn={isLoggedIn} 
+        userRole={userRole}
+    />
+)}
+<main className={currentPage !== 'admin-login' && currentPage !== 'admin' ? 'pt-20' : ''}>                {/* Conditional Rendering based on currentPage state */}
                 {currentPage === 'home' ? (
                     <>
                         <Hero />
@@ -342,11 +389,31 @@ function App() {
                         onNavigateHome={() => handleNavigate()}
                         onLoginSuccess={handleLoginSuccess}
                     />
-                ) : currentPage === 'profile' ? (
+                    ) : currentPage === 'profile' ? (
                     // Render appropriate profile based on user role
                     userRole === 'doctor'
                         ? <DoctorProfilePage onNavigate={handleNavigate} onLogout={handleLogout} />
                         : <PatientProfilePage onNavigate={handleNavigate} onLogout={handleLogout} />
+                ) : currentPage === 'admin-login' ? (
+                    // Admin Login Page
+                    <AdminLogin 
+                        onLoginSuccess={handleAdminLoginSuccess}
+                        onBackToHome={() => handleNavigate()}
+                    />
+                ) : currentPage === 'admin' ? (
+    isAdminLoggedIn ? (
+        <AdminDashboard 
+            onNavigate={handleNavigate} 
+            onLogout={handleLogout} 
+            doctors={doctors}
+            onUpdateDoctors={setDoctors}
+        />
+    ) : (
+        <>
+            {setCurrentPage('admin-login')}
+            {null}
+        </>
+    )
                 ) : currentPage === 'payment' ? (
                     // Payment page
                     <PaymentPage
@@ -354,6 +421,7 @@ function App() {
                         onPaymentSuccess={handlePaymentSuccess}
                         onBack={handlePaymentBack}
                     />
+                    
                 ) : currentPage === 'payment-success' ? (
                     // Payment success page
                     <PaymentSuccessPage
@@ -363,8 +431,9 @@ function App() {
                 ) : (
                     // Default fallback to Doctors Page if no other match (e.g. 'doctors' state)
                     <DoctorsPage 
-                        onNavigateHome={() => handleNavigate()} 
-                        onBookingConfirm={handleBookingConfirm}
+onNavigateHome={() => handleNavigate()} 
+        onBookingConfirm={handleBookingConfirm}
+        doctors={doctors} // ✅ مرر البيانات
                     />
                 )}
             </main>
@@ -436,8 +505,17 @@ function App() {
             )}
 
             {/* Footer - hidden on certain pages */}
-            {currentPage !== 'doctors' && currentPage !== 'about' && currentPage !== 'auth' && currentPage !== 'profile' && currentPage !== 'payment' && currentPage !== 'payment-success' && <Footer />}
-        </div>
+{/* Footer - hidden on certain pages */}
+{currentPage !== 'doctors' && 
+ currentPage !== 'about' && 
+ currentPage !== 'auth' && 
+ currentPage !== 'profile' && 
+ currentPage !== 'payment' && 
+ currentPage !== 'payment-success' && 
+ currentPage !== 'admin-login' &&  // ✅ أضف ده
+ currentPage !== 'admin' &&        // ✅ أضف ده
+ <Footer onNavigate={handleNavigate} />  // ✅ مرر الدالة
+}        </div>
     );
 }
 

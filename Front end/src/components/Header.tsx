@@ -14,15 +14,18 @@ import React, { useState, useEffect } from 'react';
 import { Button } from './Button';
 
 interface HeaderProps {
-    // Function to handle navigation requests
     onNavigate: (sectionId?: string) => void;
-    // Current active page to highlight links or determine behavior
-    currentPage: 'home' | 'services' | 'doctors' | 'articles' | 'about' | 'auth' | 'profile';
-    // User login status
+    // ✅ أضف 'admin-login' هنا
+    currentPage: 'home' | 'services' | 'doctors' | 'articles' | 'about' | 'auth' | 'profile' | 'admin-login' | 'admin';
     isLoggedIn?: boolean;
+    userRole?: 'patient' | 'doctor' | 'admin';
 }
-
-export const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage, isLoggedIn = false }) => {
+export const Header: React.FC<HeaderProps> = ({ 
+    onNavigate, 
+    currentPage, 
+    isLoggedIn = false,
+    userRole = 'patient' // ✅ default value
+}) => {
     // State to track if the page has been scrolled (for styling changes)
     const [scrolled, setScrolled] = useState(false);
     // State to toggle the mobile navigation menu
@@ -43,6 +46,8 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage, isLogge
     const handleNavClick = (id: string) => {
         if (id === 'about') {
             onNavigate('about');
+        } else if (id === 'admin') {
+            onNavigate('admin'); // ✅ للأدمن
         } else if (currentPage === 'home') {
             // If on home page, scroll to the section
             const element = document.getElementById(id);
@@ -90,6 +95,23 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage, isLogge
                                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-[#0EA5E9] transition-all group-hover:w-full"></span>
                             </button>
                         ))}
+                        
+                        {/* ✅ زرار Admin Dashboard (يظهر فقط للأدمن) */}
+                        {isLoggedIn && userRole === 'admin' && (
+                            <button
+                                onClick={() => handleNavClick('admin')}
+                                className={`text-sm font-medium transition-colors relative group ${
+                                    currentPage === 'admin' 
+                                        ? 'text-[#0EA5E9]' 
+                                        : 'text-gray-600 hover:text-[#0EA5E9]'
+                                }`}
+                            >
+                                Admin Dashboard
+                                <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#0EA5E9] transition-all ${
+                                    currentPage === 'admin' ? 'w-full' : 'w-0 group-hover:w-full'
+                                }`}></span>
+                            </button>
+                        )}
                     </nav>
 
                     {/* CTA Buttons (Login/Signup or Profile) */}
@@ -98,14 +120,16 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage, isLogge
                             // Show Profile button if logged in
                             <button
                                 className="flex items-center gap-2 pl-2 pr-4 py-1.5 rounded-full bg-white border border-gray-200 hover:border-[#0EA5E9] transition-all shadow-sm group"
-                                onClick={() => onNavigate('profile')}
+                                onClick={() => onNavigate(userRole === 'admin' ? 'admin' : 'profile')} // ✅ للأدمن يروح للداش بورد
                             >
                                 <img
                                     src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=100&h=100"
                                     alt="Profile"
                                     className="w-8 h-8 rounded-full object-cover border border-gray-100"
                                 />
-                                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#0EA5E9]">My Profile</span>
+                                <span className="text-sm font-semibold text-gray-700 group-hover:text-[#0EA5E9]">
+                                    {userRole === 'admin' ? 'Admin Panel' : 'My Profile'} {/* ✅ نص مختلف للأدمن */}
+                                </span>
                             </button>
                         ) : (
                             // Show Login/Signup buttons if not logged in
@@ -160,10 +184,24 @@ export const Header: React.FC<HeaderProps> = ({ onNavigate, currentPage, isLogge
                                 {item}
                             </button>
                         ))}
+                        
+                        {/* ✅ زرار Admin في Mobile Menu */}
+                        {isLoggedIn && userRole === 'admin' && (
+                            <button
+                                onClick={() => handleNavClick('admin')}
+                                className="block px-3 py-3 rounded-xl text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-blue-50 w-full text-left transition-colors"
+                            >
+                                Admin Dashboard
+                            </button>
+                        )}
+                        
                         <div className="pt-4 border-t border-gray-100 mt-2">
                             {isLoggedIn ? (
-                                <Button className="w-full rounded-xl" onClick={() => onNavigate('profile')}>
-                                    My Profile
+                                <Button 
+                                    className="w-full rounded-xl" 
+                                    onClick={() => onNavigate(userRole === 'admin' ? 'admin' : 'profile')}
+                                >
+                                    {userRole === 'admin' ? 'Admin Panel' : 'My Profile'}
                                 </Button>
                             ) : (
                                 <div className="flex flex-col gap-3">
